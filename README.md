@@ -7,7 +7,9 @@ Existing examples:
 * orderStreaming.java
 * positionPolling.java
 * positionStreaming.java
+
 Under development:
+
 ## How to
 1. Clone this repository...
 2. Run the examples using the 'run' script
