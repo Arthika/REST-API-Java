@@ -14,5 +14,5 @@ Under development:
 1. Clone this repository...
 2. Run the examples using the 'run' script
 3. Modify... Once you are familiar with these ... jump to the more complete Application code in the following repository
-4. 
+
 ## IDE
