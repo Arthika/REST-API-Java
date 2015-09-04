@@ -1,8 +1,14 @@
-# REST-API-Java
-This is Arthika's repository for sample code written in Java and using our REST API.
-We have the following 
-* Libraries:
-* Samples: Low-level samples
-* Wrappers:
-* Application-Samples
-A
+# REST-API-Java-Examples
+This is Arthika's repository for examples, sample code written in Java that demonstrates in a simple way how to use  our REST API.
+Existing examples: 
+* pricePolling.java
+* priceStreaming.java
+* orderPolling.java
+* orderStreaming.java
+* positionPolling.java
+* positionStreaming.java
+Under development:
+## How to
+1. Clone this repository...
+2. Run the examples using the 'run' script
+3. Modify... Once you are familiar with these ... jump to the more complete Application code in the following repository
