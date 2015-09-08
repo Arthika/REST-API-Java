@@ -20,7 +20,9 @@ JDK, IDE...
 
 1. Clone this repository to the location of your choice.
 2. Modify the following variables in the Java program you would like to run, we will assume it is priceStreaming.java:
-```domain
+```
+Nota: habría que modificar los .java para que al principio estén las variables a modificar y no tenerlas distribuidas por el código
+domain
 access_token
 account_id
 instruments
