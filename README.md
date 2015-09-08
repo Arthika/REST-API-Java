@@ -16,7 +16,7 @@ This is Arthika's repository for examples, sample code written in Java that demo
 Will users need previous registration, account, strategy set-up...? After all, these xamples require a pre-existing strategy
 JDK, IDE...
 
-##### How to:
+#### How to:
 
 1. Clone this repository to the location of your choice.
 2. Modify the following variables in the Java program you would like to run, we will assume it is priceStreaming.java:
@@ -29,7 +29,7 @@ this.token = token;
 this.security = security;
 this.tinterface = tinterface;
 ```
-3) Run the examples using the '.sh' script such as this one:
+**3) Run the examples using the '.sh' script such as this one:**
 ```Java
 javac -cp "commons-codec-1.9.jar":"commons-logging-1.2.jar":"fluent-hc-4.5.jar":"gson-2.3.1.jar":"httpclient-4.5.jar":"httpclient-cache-4.5.jar":"httpclient-win-4.5.jar":"httpcore-4.4.1.jar":"httpmime-4.5.jar":"jackson-all-1.9.9.jar":"jna-4.1.0.jar":"jna-platform-4.1.0.jar" priceStreaming.java
 
