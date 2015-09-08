@@ -36,23 +36,17 @@ javac -cp "commons-codec-1.9.jar":"commons-logging-1.2.jar":"fluent-hc-4.5.jar":
 java -cp ".":"commons-codec-1.9.jar":"commons-logging-1.2.jar":"fluent-hc-4.5.jar":"gson-2.3.1.jar":"httpclient-4.5.jar":"httpclient-cache-4.5.jar":"httpclient-win-4.5.jar":"httpcore-4.4.1.jar":"httpmime-4.5.jar":"jackson-all-1.9.9.jar":"jna-4.1.0.jar":"jna-platform-4.1.0.jar" priceStreaming
 ```
 
-4. Modify... Once you are familiar with these ... jump to the more complete Application code in the following repository
+4. Run the script
+```
+Arthika $ ./priceStreaming.sh 
+Response timestamp: 1441712414.982956 Contents:
+Security: EUR_USD Price: 1.11618 Side: ask Liquidity: 1000000
+Security: EUR_USD Price: 1.11613 Side: bid Liquidity: 1000000
+Response timestamp: 1441712415.983567 Contents:
+Heartbeat!
+Response timestamp: 1441712416.194543 Contents:
+Security: EUR_USD Price: 1.11618 Side: ask Liquidity: 1000000
+Security: EUR_USD Price: 1.11614 Side: bid Liquidity: 500000
+```
 
-#### Sample Output:
-```
-EUR_USD
-2014-03-21T17:56:09.932922Z
-1.37912
-1.37923
--------
-USD_CAD
-2014-03-21T17:56:20.776248Z
-1.12011
-1.12029
--------
-USD_JPY
-2014-03-21T17:56:13.668154Z
-102.262
-102.275
-```
 
