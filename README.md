@@ -22,10 +22,12 @@ JDK, IDE...
 2. Modify the following variables in the Java program you would like to run, we will assume it is priceStreaming.java:
 ```
 Nota: habría que modificar los .java para que al principio estén las variables a modificar y no tenerlas distribuidas por el código
-domain
-access_token
-account_id
-instruments
+URL = "http://demo.arthikatrading.com:81/cgi-bin/IHFTRestStreamer/getPrice"
+user=fede; strategy=fedenice;
+securities = "EUR_USD", "GBP_USD"
+this.token = token;
+this.security = security;
+this.tinterface = tinterface;
 ```
 3. Run the examples using the '.sh' script such as this one:
 ```Java
