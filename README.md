@@ -1,14 +1,16 @@
 ## REST API Java Examples
 This is Arthika's repository for examples, sample code written in Java that demonstrates in a simple way how to use  our REST API.
-Existing examples: 
-* pricePolling.java
-* priceStreaming.java
-* orderPolling.java
-* orderStreaming.java
-* positionPolling.java
-* positionStreaming.java
 
-Under development:
+| Existing examples: | Under development: |
+--------------------------------------------
+* pricePolling
+* priceStreaming
+* orderPolling
+* orderStreaming
+* positionPolling
+* positionStreaming
+
+
 ## How to and pre-requisites:
 You just need 
 
