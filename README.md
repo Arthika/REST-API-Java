@@ -3,7 +3,7 @@ This is Arthika's repository for examples, sample code written in Java that demo
 
 | Existing examples: | Under development: |
 --------------------------------------------
-* pricePolling
+|* pricePolling| a|
 * priceStreaming
 * orderPolling
 * orderStreaming
