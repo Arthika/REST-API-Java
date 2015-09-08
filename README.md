@@ -36,8 +36,8 @@ java -cp ".":"commons-codec-1.9.jar":"commons-logging-1.2.jar":"fluent-hc-4.5.ja
 
 4. Modify... Once you are familiar with these ... jump to the more complete Application code in the following repository
 
-Sample Output
-
+#### Sample Output:
+```
 EUR_USD
 2014-03-21T17:56:09.932922Z
 1.37912
@@ -52,4 +52,5 @@ USD_JPY
 2014-03-21T17:56:13.668154Z
 102.262
 102.275
+```
 
