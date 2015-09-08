@@ -16,12 +16,14 @@ This is Arthika's repository for examples, sample code written in Java that demo
 Will users need previous registration, account, strategy set-up...? After all, these xamples require a pre-existing strategy
 JDK, IDE...
 
-#### How to:
+### How to:
 
 **1. Clone this repository to the location of your choice.** 
+
 The repository contains all the examples lsted above together with the classes needed. 
 
 **2. Modify the following variables in the Java program you would like to run** 
+
 From here on we will assume it is priceStreaming.java.
 ```
 Nota: habría que modificar los .java para que al principio estén las variables a modificar y no tenerlas distribuidas por el código
