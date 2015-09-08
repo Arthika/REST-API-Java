@@ -12,9 +12,11 @@ This is Arthika's repository for examples, sample code written in Java that demo
 * Order Replacement
 * Authentication
 
-## How to and pre-requisites:
+## Pre-requisites:
 Will users need previous registration, account, strategy set-up...? After all, these xamples require a pre-existing strategy
 JDK, IDE...
+
+## How to:
 
 1. Clone this repository...
 2. Change properties 
