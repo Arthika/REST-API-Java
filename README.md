@@ -18,8 +18,11 @@ JDK, IDE...
 
 #### How to:
 
-1. Clone this repository to the location of your choice.
-2. Modify the following variables in the Java program you would like to run, we will assume it is priceStreaming.java:
+**1. Clone this repository to the location of your choice.**
+The repository contains all the examples lsted above together with the classes needed. 
+
+**2. Modify the following variables in the Java program you would like to run**
+From here on we will assume it is priceStreaming.java.
 ```
 Nota: habría que modificar los .java para que al principio estén las variables a modificar y no tenerlas distribuidas por el código
 URL = "http://demo.arthikatrading.com:81/cgi-bin/IHFTRestStreamer/getPrice"
