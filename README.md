@@ -1,4 +1,4 @@
-## REST API Java Examples
+### REST API Java Examples
 This is Arthika's repository for examples, sample code written in Java that demonstrates in a simple way how to use  our REST API.
 
 * pricePolling
@@ -12,11 +12,11 @@ This is Arthika's repository for examples, sample code written in Java that demo
 * Order Replacement
 * Authentication
 
-## Pre-requisites:
+### Pre-requisites:
 Will users need previous registration, account, strategy set-up...? After all, these xamples require a pre-existing strategy
 JDK, IDE...
 
-## How to:
+##### How to:
 
 1. Clone this repository to the location of your choice.
 2. Modify the following variables in the Java program you would like to run, we will assume it is priceStreaming.java:
@@ -29,14 +29,14 @@ this.token = token;
 this.security = security;
 this.tinterface = tinterface;
 ```
-3. Run the examples using the '.sh' script such as this one:
+3) Run the examples using the '.sh' script such as this one:
 ```Java
 javac -cp "commons-codec-1.9.jar":"commons-logging-1.2.jar":"fluent-hc-4.5.jar":"gson-2.3.1.jar":"httpclient-4.5.jar":"httpclient-cache-4.5.jar":"httpclient-win-4.5.jar":"httpcore-4.4.1.jar":"httpmime-4.5.jar":"jackson-all-1.9.9.jar":"jna-4.1.0.jar":"jna-platform-4.1.0.jar" priceStreaming.java
 
 java -cp ".":"commons-codec-1.9.jar":"commons-logging-1.2.jar":"fluent-hc-4.5.jar":"gson-2.3.1.jar":"httpclient-4.5.jar":"httpclient-cache-4.5.jar":"httpclient-win-4.5.jar":"httpcore-4.4.1.jar":"httpmime-4.5.jar":"jackson-all-1.9.9.jar":"jna-4.1.0.jar":"jna-platform-4.1.0.jar" priceStreaming
 ```
 
-4. Run the script
+4) Run the script
 ```
 Arthika $ ./priceStreaming.sh 
 Response timestamp: 1441712414.982956 Contents:
@@ -48,5 +48,6 @@ Response timestamp: 1441712416.194543 Contents:
 Security: EUR_USD Price: 1.11618 Side: ask Liquidity: 1000000
 Security: EUR_USD Price: 1.11614 Side: bid Liquidity: 500000
 ```
-
+#### Going further
+Using IDE's such as Eclipse of Netbeans
 
