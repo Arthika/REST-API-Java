@@ -111,7 +111,7 @@ public class pricePolling {
                         HttpEntity entity = httpresponse.getEntity();
                         
                         // --------------------------------------------------------------
-                        // STEP 2 : Wait for continuous responses from server (streaming)
+                        // STEP 2 : Wait for response from server
                         // --------------------------------------------------------------
 
                         try {

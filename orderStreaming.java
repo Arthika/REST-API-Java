@@ -111,7 +111,7 @@ public class orderStreaming {
 		CloseableHttpClient client = HttpClients.custom().setDefaultHeaders(headers).build();
 
         // -----------------------------------------
-        // STEP 1 : Prepare and send a price request
+        // STEP 1 : Prepare and send a order request
         // -----------------------------------------
 
 		hftRequest hftrequest = new hftRequest("fedenice", "fedenice", Arrays.asList("EUR_USD", "GBP_JPY", "GBP_USD"), null, null);

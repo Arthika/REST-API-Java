@@ -104,7 +104,7 @@ public class positionPolling {
 		CloseableHttpClient client = HttpClients.custom().setDefaultHeaders(headers).build();
 
         // -----------------------------------------
-        // STEP 1 : Prepare and send a price request
+        // STEP 1 : Prepare and send a position request
         // -----------------------------------------
 
 		hftRequest hftrequest = new hftRequest("fedenice", "fedenice", null, Arrays.asList("EUR_USD", "GBP_USD"), null);
@@ -126,7 +126,7 @@ public class positionPolling {
                         HttpEntity entity = httpresponse.getEntity();
                         
                         // --------------------------------------------------------------
-                        // STEP 2 : Wait for continuous responses from server (streaming)
+                        // STEP 2 : Wait for response from server
                         // --------------------------------------------------------------
 
                         try {
