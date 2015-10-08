@@ -36,8 +36,8 @@ public class priceStreaming {
 	public static class hftRequest {
 		public getPriceRequest  getPrice;
 		
-		public hftRequest( String user, String token, List<String> security, List<String> tinterface ) {
-			this.getPrice = new getPriceRequest(user, token, security, tinterface); 
+		public hftRequest( String user, String token, List<String> security, List<String> tinterface, String granularity, int levels ) {
+			this.getPrice = new getPriceRequest(user, token, security, tinterface, granularity, levels); 
 		}
 	}
 	
@@ -50,12 +50,16 @@ public class priceStreaming {
         public String        token;
         public List<String>  security;
         public List<String>  tinterface;
+        public String        granularity;
+		public int           levels;
         
-        public getPriceRequest( String user, String token, List<String> security, List<String> tinterface ) {
+        public getPriceRequest( String user, String token, List<String> security, List<String> tinterface, String granularity, int levels ) {
         	this.user = user;
         	this.token = token;
         	this.security = security;
         	this.tinterface = tinterface;
+        	this.granularity = granularity;
+			this.levels = levels;
         }
     }
 
@@ -93,12 +97,13 @@ public class priceStreaming {
         // STEP 1 : Prepare and send a price request
         // -----------------------------------------
 
-		hftRequest hftrequest = new hftRequest("fedenice", "fedenice", Arrays.asList("EUR_USD", "GBP_USD"), null);
+		hftRequest hftrequest = new hftRequest("fedenice", "fedenice", Arrays.asList("EUR_USD", "GBP_USD"), null, "tob", 1);
 
 		try {
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			StringEntity request = new StringEntity(mapper.writeValueAsString(hftrequest));
+			System.out.println(mapper.writeValueAsString(hftrequest));
 			HttpPost httpRequest = new HttpPost(URL);
 			httpRequest.setEntity(request);
 			
