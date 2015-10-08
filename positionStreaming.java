@@ -1,9 +1,12 @@
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -31,7 +34,12 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
 public class positionStreaming {
 
-	private static final String URL = "http://demo.arthikatrading.com:81/cgi-bin/IHFTRestStreamer/getPosition";
+	private static final String URL = "/cgi-bin/IHFTRestStreamer/getPosition";
+	private static String domain;
+	private static String user;
+	private static String password;
+	private static String authentication_port;
+	private static String request_port;
 	
 	public static class hftRequest {
 		public getPositionRequest  getPosition;
@@ -97,6 +105,9 @@ public class positionStreaming {
 	}
 
     public static void main(String[] args) throws IOException {
+    	
+    	// get properties from file
+    	getProperties();
 		
 		final ObjectMapper mapper = new ObjectMapper();
 		List<Header> headers = new ArrayList<Header>();
@@ -108,13 +119,13 @@ public class positionStreaming {
         // STEP 1 : Prepare and send a position request
         // -----------------------------------------
 
-		hftRequest hftrequest = new hftRequest("fedenice", "fedenice", null, Arrays.asList("EUR_USD", "GBP_USD"), null);
+		hftRequest hftrequest = new hftRequest(user, password, null, Arrays.asList("EUR_USD", "GBP_USD"), null);
 
 		try {
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			StringEntity request = new StringEntity(mapper.writeValueAsString(hftrequest));
-			HttpPost httpRequest = new HttpPost(URL);
+			HttpPost httpRequest = new HttpPost(domain + ":" + request_port + URL);
 			httpRequest.setEntity(request);
 			
 			// Create a custom response handler
@@ -177,6 +188,33 @@ public class positionStreaming {
 		}
 	
 	}
+    
+    public static void getProperties(){
+    	Properties prop = new Properties();
+		InputStream input = null;
+		try {
+			input = new FileInputStream("config.properties");
+			prop.load(input);
+			domain = prop.getProperty("domain");
+			user = prop.getProperty("user");
+			password = prop.getProperty("password");
+			authentication_port = prop.getProperty("authentication-port");
+			request_port = prop.getProperty("request-port");
+		}
+		catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		finally {
+			if (input != null) {
+				try {
+					input.close();
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+    }
 
 	public positionStreaming() {
 		super();
