@@ -3,11 +3,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -210,7 +211,7 @@ public class modifyOrder {
 			client.execute(httpRequest, responseHandler);
 			
 			// create challenge response
-			byte[] a = new BigInteger(challenge,16).toByteArray();
+			byte[] a = DatatypeConverter.parseHexBinary(challenge);
 			byte[] b = password.getBytes();
 			byte[] c = new byte[a.length + b.length];
 			System.arraycopy(a, 0, c, 0, a.length);
