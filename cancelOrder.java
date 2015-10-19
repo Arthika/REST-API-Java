@@ -8,8 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import javax.xml.bind.DatatypeConverter;
-
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.Header;
@@ -125,7 +124,7 @@ public class cancelOrder {
 		public String  result;
 	}
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, DecoderException {
     	
     	// get properties from file
     	getProperties();
@@ -205,7 +204,7 @@ public class cancelOrder {
 			client.execute(httpRequest, responseHandler);
 			
 			// create challenge response
-			byte[] a = DatatypeConverter.parseHexBinary(challenge);
+			byte[] a = Hex.decodeHex(challenge.toCharArray());
 			byte[] b = password.getBytes();
 			byte[] c = new byte[a.length + b.length];
 			System.arraycopy(a, 0, c, 0, a.length);
