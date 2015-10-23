@@ -49,6 +49,7 @@ public class orderStreaming {
 	private static String request_port;
 	private static String challenge;
 	private static String token;
+	private static int interval;
 	
 	public static class hftRequest {
 		public getAuthorizationChallengeRequest getAuthorizationChallenge;
@@ -268,7 +269,7 @@ public class orderStreaming {
 			// -----------------------------------------
 	        // Prepare and send a order request
 	        // -----------------------------------------
-			hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_JPY", "GBP_USD"), null, null, 1000);
+			hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_JPY", "GBP_USD"), null, null, interval);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));
@@ -297,6 +298,7 @@ public class orderStreaming {
 			password = prop.getProperty("password");
 			authentication_port = prop.getProperty("authentication-port");
 			request_port = prop.getProperty("request-port");
+			interval = Integer.parseInt(prop.getProperty("interval"));
 		}
 		catch (IOException ex) {
 			ex.printStackTrace();

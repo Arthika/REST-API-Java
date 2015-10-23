@@ -48,6 +48,7 @@ public class orderPolling {
 	private static String request_port;
 	private static String challenge;
 	private static String token;
+	//private static int interval;
 	
 	public static class hftRequest {
 		public getAuthorizationChallengeRequest getAuthorizationChallenge;
@@ -288,6 +289,7 @@ public class orderPolling {
 			password = prop.getProperty("password");
 			authentication_port = prop.getProperty("authentication-port");
 			request_port = prop.getProperty("request-port");
+			//interval = Integer.parseInt(prop.getProperty("interval"));
 		}
 		catch (IOException ex) {
 			ex.printStackTrace();
