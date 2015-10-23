@@ -63,8 +63,8 @@ public class orderStreaming {
 			this.getAuthorizationToken = new getAuthorizationTokenRequest(user, challengeresp); 
 		}
 		
-		public hftRequest( String user, String token, List<String> security, List<String> tinterface, List<String> type ) {
-			this.getOrder = new getOrderRequest(user, token, security, tinterface, type); 
+		public hftRequest( String user, String token, List<String> security, List<String> tinterface, List<String> type, int interval ) {
+			this.getOrder = new getOrderRequest(user, token, security, tinterface, type, interval); 
 		}
 	}
 	
@@ -108,13 +108,15 @@ public class orderStreaming {
 		public List<String>  security;
 		public List<String>  tinterface;
 		public List<String>  type;
+		public int           interval;
 
-		public getOrderRequest( String user, String token, List<String> security, List<String> tinterface, List<String> type ) {
+		public getOrderRequest( String user, String token, List<String> security, List<String> tinterface, List<String> type, int interval ) {
 			this.user = user;
 			this.token = token;
 			this.security = security;
 			this.tinterface = tinterface;
 			this.type = type;
+			this.interval = interval;
 		}
 	}
 	
@@ -266,7 +268,7 @@ public class orderStreaming {
 			// -----------------------------------------
 	        // Prepare and send a order request
 	        // -----------------------------------------
-			hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_JPY", "GBP_USD"), null, null);
+			hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_JPY", "GBP_USD"), null, null, 1000);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));

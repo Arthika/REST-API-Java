@@ -63,8 +63,8 @@ public class priceStreaming {
 			this.getAuthorizationToken = new getAuthorizationTokenRequest(user, challengeresp); 
 		}
 		
-		public hftRequest( String user, String token, List<String> security, List<String> tinterface, String granularity, int levels ) {
-			this.getPrice = new getPriceRequest(user, token, security, tinterface, granularity, levels); 
+		public hftRequest( String user, String token, List<String> security, List<String> tinterface, String granularity, int levels, int interval ) {
+			this.getPrice = new getPriceRequest(user, token, security, tinterface, granularity, levels, interval); 
 		}
 		
 	}
@@ -110,14 +110,16 @@ public class priceStreaming {
         public List<String>  tinterface;
         public String        granularity;
 		public int           levels;
+		public int           interval;
         
-        public getPriceRequest( String user, String token, List<String> security, List<String> tinterface, String granularity, int levels ) {
+        public getPriceRequest( String user, String token, List<String> security, List<String> tinterface, String granularity, int levels, int interval ) {
         	this.user = user;
         	this.token = token;
         	this.security = security;
         	this.tinterface = tinterface;
         	this.granularity = granularity;
 			this.levels = levels;
+			this.interval = interval;
         }
     }
 
@@ -190,7 +192,7 @@ public class priceStreaming {
                         		}
                         		if (response.getPriceResponse.tick != null){
                         			for (priceTick tick : response.getPriceResponse.tick){
-                        				System.out.println("Security: " + tick.security + " Price: " + tick.price + " Side: " + tick.side + " Liquidity: " + tick.liquidity);
+                        				System.out.println("Security: " + tick.security + " Price: " + tick.price + " tinterface: " + tick.tinterface + " Side: " + tick.side + " Liquidity: " + tick.liquidity);
                         			}
                         		}
                         		if (response.getPriceResponse.heartbeat != null){
@@ -250,7 +252,7 @@ public class priceStreaming {
 			// -----------------------------------------
 	        // Prepare and send a price request
 	        // -----------------------------------------
-			hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_USD"), null, "tob", 1);
+			hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_USD"), null, "tob", 1, 1000);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));

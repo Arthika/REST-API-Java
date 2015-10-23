@@ -185,7 +185,7 @@ public class pricePolling {
                         	if (response.getPriceResponse != null){
                         		if (response.getPriceResponse.tick != null){
                                     for (priceTick tick : response.getPriceResponse.tick){
-                                    	System.out.println("Security: " + tick.security + " Price: " + tick.price + " Side: " + tick.side + " Liquidity: " + tick.liquidity);
+                                    	System.out.println("Security: " + tick.security + " Price: " + tick.price +" tinterface: " + tick.tinterface +  " Side: " + tick.side + " Liquidity: " + tick.liquidity);
                                     }
                                 }
                                 if (response.getPriceResponse.message != null){

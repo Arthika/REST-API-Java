@@ -63,8 +63,8 @@ public class positionStreaming {
 			this.getAuthorizationToken = new getAuthorizationTokenRequest(user, challengeresp); 
 		}
 		
-		public hftRequest( String user, String token, List<String> asset, List<String> security, List<String> account ) {
-			this.getPosition = new getPositionRequest(user, token, asset, security, account); 
+		public hftRequest( String user, String token, List<String> asset, List<String> security, List<String> account, int interval ) {
+			this.getPosition = new getPositionRequest(user, token, asset, security, account, interval); 
 		}
 	}
 	
@@ -108,13 +108,15 @@ public class positionStreaming {
 		public List<String>  asset;
 		public List<String>  security;
 		public List<String>  account;
+		public int           interval;
 
-		public getPositionRequest( String user, String token, List<String> asset, List<String> security, List<String> account ) {
+		public getPositionRequest( String user, String token, List<String> asset, List<String> security, List<String> account, int interval ) {
 			this.user = user;
 			this.token = token;
 			this.asset = asset;
 			this.security = security;
 			this.account = account;
+			this.interval = interval;
 		}
 	}
 
@@ -123,6 +125,7 @@ public class positionStreaming {
 		public String           message;
 		public List<assetPositionTick>  assetposition;
 		public List<securityPositionTick>  securityposition;
+		public accountingTick  accounting;
 		public positionHeartbeat  heartbeat;
 		public String           timestamp;
 	}
@@ -131,9 +134,7 @@ public class positionStreaming {
 		public String  account;
 		public String  asset;
 		public double  exposure;
-		public double  equity;
-		public double  totalexposure;
-		public double  freemargin;
+        public double  totalrisk;
 	}
 	
 	public static class securityPositionTick {
@@ -143,7 +144,12 @@ public class positionStreaming {
 		public String  side;
 		public double  price;
 		public int     pips;
-		public double  equity;
+	}
+	
+	public static class accountingTick {
+		public double  strategyPL;
+		public double  totalequity;
+		public double  usedmargin;
 		public double  freemargin;
 	}
 	
@@ -184,6 +190,7 @@ public class positionStreaming {
                         String line = null;
                         
                         while ((line = bufferedReader.readLine()) != null) {
+                        	System.out.println(line);
                         	hftResponse response = mapper.readValue(line, hftResponse.class);
                         	
                         	if (response.getAuthorizationChallengeResponse != null){
@@ -200,12 +207,12 @@ public class positionStreaming {
 								}
 								if (response.getPositionResponse.assetposition!= null){
 									for (assetPositionTick tick : response.getPositionResponse.assetposition){
-										System.out.println("Asset: " + tick.asset + " Account: " + tick.account + " Equity: " + tick.equity + " Exposure: " + tick.exposure);
+										System.out.println("Asset: " + tick.asset + " Account: " + tick.account + " Exposure: " + tick.exposure);
                                     }
 								}
 								if (response.getPositionResponse.securityposition!= null){
 									for (securityPositionTick tick : response.getPositionResponse.securityposition){
-										System.out.println("Security: " + tick.security + " Account: " + tick.account + " Equity: " + tick.equity + " Exposure: " + tick.exposure + " Price: " + tick.price + " Pips: " + tick.pips);
+										System.out.println("Security: " + tick.security + " Account: " + tick.account + " Exposure: " + tick.exposure + " Price: " + tick.price + " Pips: " + tick.pips);
                                     }
 								}
 								if (response.getPositionResponse.heartbeat!= null){
@@ -265,7 +272,7 @@ public class positionStreaming {
 			// -----------------------------------------
 	        // Prepare and send a position request
 	        // -----------------------------------------
-			hftrequest = new hftRequest(user, token, null, Arrays.asList("EUR_USD", "GBP_USD"), null);
+			hftrequest = new hftRequest(user, token, null, Arrays.asList("EUR_USD", "GBP_USD"), null, 1000);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));

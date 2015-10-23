@@ -122,6 +122,7 @@ public class positionPolling {
 		public String           message;
 		public List<assetPositionTick>  assetposition;
 		public List<securityPositionTick>  securityposition;
+		public accountingTick  accounting;
 		public positionHeartbeat  heartbeat;
 		public String           timestamp;
 	}
@@ -130,9 +131,7 @@ public class positionPolling {
 		public String  account;
 		public String  asset;
 		public double  exposure;
-		public double  equity;
-		public double  totalexposure;
-		public double  freemargin;
+        public double  totalrisk;
 	}
 	
 	public static class securityPositionTick {
@@ -143,6 +142,13 @@ public class positionPolling {
 		public double  price;
 		public int     pips;
 		public double  equity;
+		public double  freemargin;
+	}
+	
+	public static class accountingTick {
+		public double  strategyPL;
+		public double  totalequity;
+		public double  usedmargin;
 		public double  freemargin;
 	}
 	
@@ -196,7 +202,7 @@ public class positionPolling {
                         	if (response.getPositionResponse != null){
                         		if (response.getPositionResponse.assetposition!= null){
 									for (assetPositionTick tick : response.getPositionResponse.assetposition){
-										System.out.println("Asset: " + tick.asset + " Account: " + tick.account + " Equity: " + tick.equity + " Exposure: " + tick.exposure);
+										System.out.println("Asset: " + tick.asset + " Account: " + tick.account + " Exposure: " + tick.exposure);
                                     }
 								}
 								if (response.getPositionResponse.securityposition!= null){
