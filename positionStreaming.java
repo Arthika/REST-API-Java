@@ -191,7 +191,6 @@ public class positionStreaming {
                         String line = null;
                         
                         while ((line = bufferedReader.readLine()) != null) {
-                        	System.out.println(line);
                         	hftResponse response = mapper.readValue(line, hftResponse.class);
                         	
                         	if (response.getAuthorizationChallengeResponse != null){
@@ -205,6 +204,10 @@ public class positionStreaming {
                         	if (response.getPositionResponse != null){
                         		if (response.getPositionResponse.timestamp != null){
                                 	System.out.println("Response timestamp: " + response.getPositionResponse.timestamp + " Contents:");
+								}
+                        		if (response.getPositionResponse.accounting!= null){
+                        			accountingTick tick = response.getPositionResponse.accounting;
+                        			System.out.println("StrategyPL: " + tick.strategyPL + " TotalEquity: " + tick.totalequity + " UsedMargin: " + tick.usedmargin + " FreeMargin: " + tick.freemargin);
 								}
 								if (response.getPositionResponse.assetposition!= null){
 									for (assetPositionTick tick : response.getPositionResponse.assetposition){

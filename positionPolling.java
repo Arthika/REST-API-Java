@@ -201,6 +201,10 @@ public class positionPolling {
                         		return null;
                         	}
                         	if (response.getPositionResponse != null){
+                        		if (response.getPositionResponse.accounting!= null){
+                        			accountingTick tick = response.getPositionResponse.accounting;
+                        			System.out.println("StrategyPL: " + tick.strategyPL + " TotalEquity: " + tick.totalequity + " UsedMargin: " + tick.usedmargin + " FreeMargin: " + tick.freemargin);
+                                }
                         		if (response.getPositionResponse.assetposition!= null){
 									for (assetPositionTick tick : response.getPositionResponse.assetposition){
 										System.out.println("Asset: " + tick.asset + " Account: " + tick.account + " Exposure: " + tick.exposure);
@@ -295,6 +299,8 @@ public class positionPolling {
 			authentication_port = prop.getProperty("authentication-port");
 			request_port = prop.getProperty("request-port");
 			//interval = Integer.parseInt(prop.getProperty("interval"));
+			user = "jaime_api";
+			password = "jaime_api";
 		}
 		catch (IOException ex) {
 			ex.printStackTrace();
