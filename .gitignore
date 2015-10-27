@@ -1,2 +1,3 @@
 # Ignore classes
 *.class
+/bin/
