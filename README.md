@@ -26,24 +26,26 @@ The repository contains all the examples lsted above together with the classes n
 
 From here on we will assume it is priceStreaming.java.
 ```
-Nota: habría que modificar los .java para que al principio estén las variables a modificar y no tenerlas distribuidas por el código
 URL = "http://demo.arthikatrading.com:81/cgi-bin/IHFTRestStreamer/getPrice"
-user=fede; strategy=fedenice;
+strategy=demo;
 securities = "EUR_USD", "GBP_USD"
 this.token = token;
 this.security = security;
 this.tinterface = tinterface;
 ```
 **3. Run the examples using the '.sh' script such as this one:**
-```Java
-javac -cp "commons-codec-1.9.jar":"commons-logging-1.2.jar":"fluent-hc-4.5.jar":"gson-2.3.1.jar":"httpclient-4.5.jar":"httpclient-cache-4.5.jar":"httpclient-win-4.5.jar":"httpcore-4.4.1.jar":"httpmime-4.5.jar":"jackson-all-1.9.9.jar":"jna-4.1.0.jar":"jna-platform-4.1.0.jar" priceStreaming.java
+```javascript
+$ export JARS=lib/commons-codec-1.9.jar:lib/commons-logging-1.2.jar:lib/fluent-hc-4.5.jar:lib/httpclient-4.5.jar:lib/httpclient-cache-4.5.jar:lib/httpclient-win-4.5.jar:lib/httpcore-4.4.1.jar:lib/httpmime-4.5.jar:lib/jackson-all-1.9.9.jar:lib/jna-4.1.0.jar:lib/jna-platform-4.1.0.jar
 
-java -cp ".":"commons-codec-1.9.jar":"commons-logging-1.2.jar":"fluent-hc-4.5.jar":"gson-2.3.1.jar":"httpclient-4.5.jar":"httpclient-cache-4.5.jar":"httpclient-win-4.5.jar":"httpcore-4.4.1.jar":"httpmime-4.5.jar":"jackson-all-1.9.9.jar":"jna-4.1.0.jar":"jna-platform-4.1.0.jar" priceStreaming
+$ javac -cp $JARS src/priceStreaming.java
 ```
 
-**4. Run the script**
-```
-Arthika $ ./priceStreaming.sh 
+**4. Execute the sample**
+```javascript
+$ export JARS=lib/commons-codec-1.9.jar:lib/commons-logging-1.2.jar:lib/fluent-hc-4.5.jar:lib/httpclient-4.5.jar:lib/httpclient-cache-4.5.jar:lib/httpclient-win-4.5.jar:lib/httpcore-4.4.1.jar:lib/httpmime-4.5.jar:lib/jackson-all-1.9.9.jar:lib/jna-4.1.0.jar:lib/jna-platform-4.1.0.jar
+
+$ java -cp $JARS src/priceStreaming
+
 Response timestamp: 1441712414.982956 Contents:
 Security: EUR_USD Price: 1.11618 Side: ask Liquidity: 1000000
 Security: EUR_USD Price: 1.11613 Side: bid Liquidity: 1000000
@@ -54,5 +56,5 @@ Security: EUR_USD Price: 1.11618 Side: ask Liquidity: 1000000
 Security: EUR_USD Price: 1.11614 Side: bid Liquidity: 500000
 ```
 #### Going further
-Using IDE's such as Eclipse of Netbeans
+Using IDE's such as Eclipse or Netbeans
 
