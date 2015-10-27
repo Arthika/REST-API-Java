@@ -1,3 +1,4 @@
+package src;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,7 +23,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
@@ -35,12 +35,12 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 // 2) 'httpclient-xxx.jar' with MAVEN dependency: groupId 'org.apache.httpcomponents', artifactId 'fluent-hc' and version 4.5
 //                         or download from main project at 'https://hc.apache.org'
 
-public class positionStreaming {
+public class setOrder {
 
-	private static final String URL = "/getPosition";
+	private static final String URL = "/setOrder";
 	private static String domain;
-	private static String url_stream;
-	//private static String url_polling;
+	//private static String url_stream;
+	private static String url_polling;
 	private static String url_challenge;
 	private static String url_token;
 	private static String user;
@@ -49,12 +49,12 @@ public class positionStreaming {
 	private static String request_port;
 	private static String challenge;
 	private static String token;
-	private static int interval;
+	//private static int interval;
 	
 	public static class hftRequest {
 		public getAuthorizationChallengeRequest getAuthorizationChallenge;
 		public getAuthorizationTokenRequest getAuthorizationToken;
-		public getPositionRequest  getPosition;
+		public setOrderRequest  setOrder;
 		
 		public hftRequest( String user) {
 			this.getAuthorizationChallenge = new getAuthorizationChallengeRequest(user); 
@@ -64,15 +64,15 @@ public class positionStreaming {
 			this.getAuthorizationToken = new getAuthorizationTokenRequest(user, challengeresp); 
 		}
 		
-		public hftRequest( String user, String token, List<String> asset, List<String> security, List<String> account, int interval ) {
-			this.getPosition = new getPositionRequest(user, token, asset, security, account, interval); 
+		public hftRequest( String user, String token, List<orderRequest> order ) {
+			this.setOrder = new setOrderRequest(user, token, order); 
 		}
 	}
 	
-	public static class hftResponse {
+	public static class hftResponse{
 		public getAuthorizationChallengeResponse getAuthorizationChallengeResponse;
         public getAuthorizationTokenResponse getAuthorizationTokenResponse;
-        public getPositionResponse getPositionResponse;
+        public setOrderResponse setOrderResponse;
     }
 	
 	public static class getAuthorizationChallengeRequest {
@@ -103,61 +103,37 @@ public class positionStreaming {
         public String        timestamp;
     }
 
-	public static class getPositionRequest {
+	public static class setOrderRequest {
 		public String        user;
 		public String        token;
-		public List<String>  asset;
-		public List<String>  security;
-		public List<String>  account;
-		public int           interval;
+		public List<orderRequest>  order;
 
-		public getPositionRequest( String user, String token, List<String> asset, List<String> security, List<String> account, int interval ) {
+		public setOrderRequest( String user, String token, List<orderRequest> order ) {
 			this.user = user;
 			this.token = token;
-			this.asset = asset;
-			this.security = security;
-			this.account = account;
-			this.interval = interval;
+			this.order = order;
 		}
 	}
 
-	public static class getPositionResponse {
+	public static class setOrderResponse {
 		public int              result;
 		public String           message;
-		public List<assetPositionTick>  assetposition;
-		public List<securityPositionTick>  securityposition;
-		public accountingTick  accounting;
-		public positionHeartbeat  heartbeat;
+		public List<orderRequest>    order;
 		public String           timestamp;
 	}
 	
-	public static class assetPositionTick {
-		public String  account;
-		public String  asset;
-		public double  exposure;
-        public double  totalrisk;
-	}
-	
-	public static class securityPositionTick {
-		public String  account;
+	public static class orderRequest {
 		public String  security;
-		public double  exposure;
+		public String  tinterface;
+		public int     quantity;
 		public String  side;
+		public String  type;
+		public String  timeinforce;
 		public double  price;
-		public int     pips;
-	}
-	
-	public static class accountingTick {
-		public double  strategyPL;
-		public double  totalequity;
-		public double  usedmargin;
-		public double  freemargin;
-	}
-	
-	public static class positionHeartbeat {
-		public List<String>  asset;
-		public List<String>  security;
-		public List<String>  account;
+		public int     expiration;
+		public int     userparam;
+		public int     tempid;
+		public String  result;
 	}
 
     public static void main(String[] args) throws IOException, DecoderException {
@@ -182,7 +158,7 @@ public class positionStreaming {
                     HttpEntity entity = httpresponse.getEntity();
                     
                     // --------------------------------------------------------------
-                    // Wait for continuous responses from server (streaming)
+                    // Wait for response from server (polling)
                     // --------------------------------------------------------------
 
                     try {
@@ -201,29 +177,14 @@ public class positionStreaming {
                         		token = response.getAuthorizationTokenResponse.token;
                         		return null;
                         	}
-                        	if (response.getPositionResponse != null){
-                        		if (response.getPositionResponse.timestamp != null){
-                                	System.out.println("Response timestamp: " + response.getPositionResponse.timestamp + " Contents:");
-								}
-                        		if (response.getPositionResponse.accounting!= null){
-                        			accountingTick tick = response.getPositionResponse.accounting;
-                        			System.out.println("StrategyPL: " + tick.strategyPL + " TotalEquity: " + tick.totalequity + " UsedMargin: " + tick.usedmargin + " FreeMargin: " + tick.freemargin);
-								}
-								if (response.getPositionResponse.assetposition!= null){
-									for (assetPositionTick tick : response.getPositionResponse.assetposition){
-										System.out.println("Asset: " + tick.asset + " Account: " + tick.account + " Exposure: " + tick.exposure);
+                        	if (response.setOrderResponse != null){
+                        		if (response.setOrderResponse.order!= null){
+									for (orderRequest tick : response.setOrderResponse.order){
+										System.out.println("TempId: " + tick.tempid + " Security: " + tick.security + " Quantity: " + tick.quantity + " Type: " + tick.type + " Side: " + tick.side + " Price: " + tick.price + " Result: " + tick.result);
                                     }
 								}
-								if (response.getPositionResponse.securityposition!= null){
-									for (securityPositionTick tick : response.getPositionResponse.securityposition){
-										System.out.println("Security: " + tick.security + " Account: " + tick.account + " Exposure: " + tick.exposure + " Price: " + tick.price + " Pips: " + tick.pips);
-                                    }
-								}
-								if (response.getPositionResponse.heartbeat!= null){
-									System.out.println("Heartbeat!");
-								}
-								if (response.getPositionResponse.message != null){
-									System.out.println("Message from server: " + response.getPositionResponse.message);
+								if (response.setOrderResponse.message != null){
+									System.out.println("Message from server: " + response.setOrderResponse.message);
 								}
                         	}
                         }
@@ -231,7 +192,7 @@ public class positionStreaming {
                     catch (IOException e) { e.printStackTrace(); }
                     catch (Exception e) { e.printStackTrace(); }
                     
-                    return entity != null ? EntityUtils.toString(entity) : null;
+                    return null;
                     
                 } else {
                     throw new ClientProtocolException("Unexpected response status: " + status);
@@ -274,14 +235,29 @@ public class positionStreaming {
 			client.execute(httpRequest, responseHandler);
         	
 			// -----------------------------------------
-	        // Prepare and send a position request
+	        // Prepare and send a setOrder request with two orders
 	        // -----------------------------------------
-			hftrequest = new hftRequest(user, token, null, Arrays.asList("EUR_USD", "GBP_USD"), null, interval);
+			orderRequest order1 = new orderRequest();
+			order1.security = "EUR_USD";
+			order1.tinterface = "Baxter_CNX";
+			order1.quantity = 500000;
+			order1.side = "sell";
+			order1.type = "market";
+			
+			orderRequest order2 = new orderRequest();
+			order2.security = "GBP_USD";
+			order2.tinterface = "Baxter_CNX";
+			order2.quantity = 600000;
+			order2.side = "sell";
+			order2.type = "limit";
+			order2.timeinforce = "day";
+			order2.price = 1.47389;
+			hftrequest = new hftRequest(user, token, Arrays.asList(order1, order2));
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));
 			System.out.println(mapper.writeValueAsString(hftrequest));
-			httpRequest = new HttpPost(domain + ":" + request_port + url_stream + URL);
+			httpRequest = new HttpPost(domain + ":" + request_port + url_polling + URL);
 			httpRequest.setEntity(request);
 			client.execute(httpRequest, responseHandler);
 		} finally {
@@ -297,15 +273,15 @@ public class positionStreaming {
 			input = new FileInputStream("config.properties");
 			prop.load(input);
 			domain = prop.getProperty("domain");
-			url_stream = prop.getProperty("url-stream");
-			//url_polling = prop.getProperty("url-polling");
+			//url_stream = prop.getProperty("url-stream");
+			url_polling = prop.getProperty("url-polling");
 			url_challenge = prop.getProperty("url-challenge");
 			url_token = prop.getProperty("url-token");
 			user = prop.getProperty("user");
 			password = prop.getProperty("password");
 			authentication_port = prop.getProperty("authentication-port");
 			request_port = prop.getProperty("request-port");
-			interval = Integer.parseInt(prop.getProperty("interval"));
+			//interval = Integer.parseInt(prop.getProperty("interval"));
 		}
 		catch (IOException ex) {
 			ex.printStackTrace();
@@ -322,7 +298,7 @@ public class positionStreaming {
 		}
     }
 
-	public positionStreaming() {
+	public setOrder() {
 		super();
 	}
 

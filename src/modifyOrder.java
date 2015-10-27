@@ -1,3 +1,4 @@
+package src;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,9 +35,9 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 // 2) 'httpclient-xxx.jar' with MAVEN dependency: groupId 'org.apache.httpcomponents', artifactId 'fluent-hc' and version 4.5
 //                         or download from main project at 'https://hc.apache.org'
 
-public class orderPolling {
+public class modifyOrder {
 
-	private static final String URL = "/getOrder";
+	private static final String URL = "/modifyOrder";
 	private static String domain;
 	//private static String url_stream;
 	private static String url_polling;
@@ -53,7 +54,7 @@ public class orderPolling {
 	public static class hftRequest {
 		public getAuthorizationChallengeRequest getAuthorizationChallenge;
 		public getAuthorizationTokenRequest getAuthorizationToken;
-		public getOrderRequest  getOrder;
+		public modifyOrderRequest  modifyOrder;
 		
 		public hftRequest( String user) {
 			this.getAuthorizationChallenge = new getAuthorizationChallengeRequest(user); 
@@ -63,15 +64,15 @@ public class orderPolling {
 			this.getAuthorizationToken = new getAuthorizationTokenRequest(user, challengeresp); 
 		}
 		
-		public hftRequest( String user, String token, List<String> security, List<String> tinterface, List<String> type ) {
-			this.getOrder = new getOrderRequest(user, token, security, tinterface, type); 
+		public hftRequest( String user, String token, List<modOrder> order ) {
+			this.modifyOrder = new modifyOrderRequest(user, token, order); 
 		}
 	}
 	
 	public static class hftResponse{
 		public getAuthorizationChallengeResponse getAuthorizationChallengeResponse;
         public getAuthorizationTokenResponse getAuthorizationTokenResponse;
-        public getOrderResponse getOrderResponse;
+        public modifyOrderResponse modifyOrderResponse;
     }
 	
 	public static class getAuthorizationChallengeRequest {
@@ -102,61 +103,33 @@ public class orderPolling {
         public String        timestamp;
     }
 
-	public static class getOrderRequest {
+	public static class modifyOrderRequest {
 		public String        user;
 		public String        token;
-		public List<String>  security;
-		public List<String>  tinterface;
-		public List<String>  type;
+		public List<modOrder>   order;
 
-		public getOrderRequest( String user, String token, List<String> security, List<String> tinterface, List<String> type ) {
+		public modifyOrderRequest( String user, String token, List<modOrder> order ) {
 			this.user = user;
 			this.token = token;
-			this.security = security;
-			this.tinterface = tinterface;
-			this.type = type;
+			this.order = order;
 		}
 	}
 	
-	public static class getOrderResponse {
-		public int              result;
-		public String           message;
-		public List<orderTick>  order;
-		public orderHeartbeat   heartbeat;
-		public String           timestamp;
-		
-	}
-	
-	public static class orderTick {
-		public int     tempid;
-		public String  orderid;
+	public static class modOrder {
 		public String  fixid;
-		public String  account;
-		public String  tinterface;
-		public String  security;
-		public int     pips;
-		public int     quantity;
-		public String  side;
-		public String  type;
-		public double  limitprice;
-		public int     maxshowquantity;
-		public String  timeinforce;
-		public int     seconds;
-		public int     milliseconds;
-		public String  expiration;
-		public double  finishedprice;
-		public int     finishedquantity;
-		public String  commcurrency;
-		public double  commission;
-		public double  priceatstart;
-		public int     userparam;
-		public String  status;
-		public String  reason;
+        public double  price;
+        public int     quantity;
+    }
+
+	public static class modifyOrderResponse {
+		public List<modifyTick> order;
+		public String           message;
+		public String           timestamp;
 	}
 	
-	public static class orderHeartbeat {
-		public List<String>  security;
-		public List<String>  tinterface;
+	public static class modifyTick {
+		public String  fixid;
+		public String  result;
 	}
 
     public static void main(String[] args) throws IOException, DecoderException {
@@ -200,14 +173,14 @@ public class orderPolling {
                         		token = response.getAuthorizationTokenResponse.token;
                         		return null;
                         	}
-                        	if (response.getOrderResponse != null){
-                        		if (response.getOrderResponse.order!= null){
-									for (orderTick tick : response.getOrderResponse.order){
-										System.out.println("TempId: " + tick.tempid + " OrderId: " + tick.orderid + " Security: " + tick.security + " Account: " + tick.account + " Quantity: " + tick.quantity + " Type: " + tick.type + " Side: " + tick.side + " Status: " + tick.status);
-                                    }
-								}
-								if (response.getOrderResponse.message != null){
-									System.out.println("Message from server: " + response.getOrderResponse.message);
+                        	if (response.modifyOrderResponse != null){
+                        		if (response.modifyOrderResponse.order != null){
+                        			for (modifyTick tick : response.modifyOrderResponse.order){
+                        				System.out.println("Result from server: " + tick.fixid + "-" + tick.result);
+                        			}
+                        		}
+								if (response.modifyOrderResponse.message != null){
+									System.out.println("Message from server: " + response.modifyOrderResponse.message);
 								}
                         	}
                         }
@@ -258,9 +231,17 @@ public class orderPolling {
 			client.execute(httpRequest, responseHandler);
         	
 			// -----------------------------------------
-	        // Prepare and send a order request
+	        // Prepare and send a modifyOrder request for two pending orders
 	        // -----------------------------------------
-			hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_JPY", "GBP_USD"), null, null);
+			modOrder order1 = new modOrder();
+			order1.fixid = "TRD_20151007112351168_0128";
+			order1.price = 1.11005;
+			order1.quantity = 20000;
+			modOrder order2 = new modOrder();
+			order2.fixid = "TRD_20151007112401904_0127";
+			order2.price = 1.11006;
+			order2.quantity = 30000;
+			hftrequest = new hftRequest(user, token, Arrays.asList(order1, order2));
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));
@@ -271,7 +252,7 @@ public class orderPolling {
 		} finally {
 			client.close();
 		}
-
+	
 	}
     
     public static void getProperties(){
@@ -306,7 +287,7 @@ public class orderPolling {
 		}
     }
 
-	public orderPolling() {
+	public modifyOrder() {
 		super();
 	}
 

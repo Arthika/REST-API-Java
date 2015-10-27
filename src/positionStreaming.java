@@ -1,3 +1,4 @@
+package src;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
@@ -34,12 +36,12 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 // 2) 'httpclient-xxx.jar' with MAVEN dependency: groupId 'org.apache.httpcomponents', artifactId 'fluent-hc' and version 4.5
 //                         or download from main project at 'https://hc.apache.org'
 
-public class positionPolling {
+public class positionStreaming {
 
 	private static final String URL = "/getPosition";
 	private static String domain;
-	//private static String url_stream;
-	private static String url_polling;
+	private static String url_stream;
+	//private static String url_polling;
 	private static String url_challenge;
 	private static String url_token;
 	private static String user;
@@ -48,7 +50,7 @@ public class positionPolling {
 	private static String request_port;
 	private static String challenge;
 	private static String token;
-	//private static int interval;
+	private static int interval;
 	
 	public static class hftRequest {
 		public getAuthorizationChallengeRequest getAuthorizationChallenge;
@@ -63,8 +65,8 @@ public class positionPolling {
 			this.getAuthorizationToken = new getAuthorizationTokenRequest(user, challengeresp); 
 		}
 		
-		public hftRequest( String user, String token, List<String> asset, List<String> security, List<String> account ) {
-			this.getPosition = new getPositionRequest(user, token, asset, security, account); 
+		public hftRequest( String user, String token, List<String> asset, List<String> security, List<String> account, int interval ) {
+			this.getPosition = new getPositionRequest(user, token, asset, security, account, interval); 
 		}
 	}
 	
@@ -108,13 +110,15 @@ public class positionPolling {
 		public List<String>  asset;
 		public List<String>  security;
 		public List<String>  account;
+		public int           interval;
 
-		public getPositionRequest( String user, String token, List<String> asset, List<String> security, List<String> account ) {
+		public getPositionRequest( String user, String token, List<String> asset, List<String> security, List<String> account, int interval ) {
 			this.user = user;
 			this.token = token;
 			this.asset = asset;
 			this.security = security;
 			this.account = account;
+			this.interval = interval;
 		}
 	}
 
@@ -142,8 +146,6 @@ public class positionPolling {
 		public String  side;
 		public double  price;
 		public int     pips;
-		public double  equity;
-		public double  freemargin;
 	}
 	
 	public static class accountingTick {
@@ -181,7 +183,7 @@ public class positionPolling {
                     HttpEntity entity = httpresponse.getEntity();
                     
                     // --------------------------------------------------------------
-                    // Wait for response from server (polling)
+                    // Wait for continuous responses from server (streaming)
                     // --------------------------------------------------------------
 
                     try {
@@ -201,19 +203,25 @@ public class positionPolling {
                         		return null;
                         	}
                         	if (response.getPositionResponse != null){
+                        		if (response.getPositionResponse.timestamp != null){
+                                	System.out.println("Response timestamp: " + response.getPositionResponse.timestamp + " Contents:");
+								}
                         		if (response.getPositionResponse.accounting!= null){
                         			accountingTick tick = response.getPositionResponse.accounting;
                         			System.out.println("StrategyPL: " + tick.strategyPL + " TotalEquity: " + tick.totalequity + " UsedMargin: " + tick.usedmargin + " FreeMargin: " + tick.freemargin);
-                                }
-                        		if (response.getPositionResponse.assetposition!= null){
+								}
+								if (response.getPositionResponse.assetposition!= null){
 									for (assetPositionTick tick : response.getPositionResponse.assetposition){
 										System.out.println("Asset: " + tick.asset + " Account: " + tick.account + " Exposure: " + tick.exposure);
                                     }
 								}
 								if (response.getPositionResponse.securityposition!= null){
 									for (securityPositionTick tick : response.getPositionResponse.securityposition){
-										System.out.println("Security: " + tick.security + " Account: " + tick.account + " Equity: " + tick.equity + " Exposure: " + tick.exposure + " Price: " + tick.price + " Pips: " + tick.pips);
+										System.out.println("Security: " + tick.security + " Account: " + tick.account + " Exposure: " + tick.exposure + " Price: " + tick.price + " Pips: " + tick.pips);
                                     }
+								}
+								if (response.getPositionResponse.heartbeat!= null){
+									System.out.println("Heartbeat!");
 								}
 								if (response.getPositionResponse.message != null){
 									System.out.println("Message from server: " + response.getPositionResponse.message);
@@ -224,7 +232,7 @@ public class positionPolling {
                     catch (IOException e) { e.printStackTrace(); }
                     catch (Exception e) { e.printStackTrace(); }
                     
-                    return null;
+                    return entity != null ? EntityUtils.toString(entity) : null;
                     
                 } else {
                     throw new ClientProtocolException("Unexpected response status: " + status);
@@ -248,7 +256,7 @@ public class positionPolling {
 			client.execute(httpRequest, responseHandler);
 			
 			// create challenge response
-			byte[] a = Hex.decodeHex(challenge.toCharArray());;
+			byte[] a = Hex.decodeHex(challenge.toCharArray());
 			byte[] b = password.getBytes();
 			byte[] c = new byte[a.length + b.length];
 			System.arraycopy(a, 0, c, 0, a.length);
@@ -269,12 +277,12 @@ public class positionPolling {
 			// -----------------------------------------
 	        // Prepare and send a position request
 	        // -----------------------------------------
-			hftrequest = new hftRequest(user, token, null, Arrays.asList("EUR_USD", "GBP_USD"), null);
+			hftrequest = new hftRequest(user, token, null, Arrays.asList("EUR_USD", "GBP_USD"), null, interval);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));
 			System.out.println(mapper.writeValueAsString(hftrequest));
-			httpRequest = new HttpPost(domain + ":" + request_port + url_polling + URL);
+			httpRequest = new HttpPost(domain + ":" + request_port + url_stream + URL);
 			httpRequest.setEntity(request);
 			client.execute(httpRequest, responseHandler);
 		} finally {
@@ -290,17 +298,15 @@ public class positionPolling {
 			input = new FileInputStream("config.properties");
 			prop.load(input);
 			domain = prop.getProperty("domain");
-			//url_stream = prop.getProperty("url-stream");
-			url_polling = prop.getProperty("url-polling");
+			url_stream = prop.getProperty("url-stream");
+			//url_polling = prop.getProperty("url-polling");
 			url_challenge = prop.getProperty("url-challenge");
 			url_token = prop.getProperty("url-token");
 			user = prop.getProperty("user");
 			password = prop.getProperty("password");
 			authentication_port = prop.getProperty("authentication-port");
 			request_port = prop.getProperty("request-port");
-			//interval = Integer.parseInt(prop.getProperty("interval"));
-			user = "jaime_api";
-			password = "jaime_api";
+			interval = Integer.parseInt(prop.getProperty("interval"));
 		}
 		catch (IOException ex) {
 			ex.printStackTrace();
@@ -317,7 +323,7 @@ public class positionPolling {
 		}
     }
 
-	public positionPolling() {
+	public positionStreaming() {
 		super();
 	}
 

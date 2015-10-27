@@ -1,3 +1,4 @@
+package src;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,9 +35,9 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 // 2) 'httpclient-xxx.jar' with MAVEN dependency: groupId 'org.apache.httpcomponents', artifactId 'fluent-hc' and version 4.5
 //                         or download from main project at 'https://hc.apache.org'
 
-public class modifyOrder {
+public class positionPolling {
 
-	private static final String URL = "/modifyOrder";
+	private static final String URL = "/getPosition";
 	private static String domain;
 	//private static String url_stream;
 	private static String url_polling;
@@ -53,7 +54,7 @@ public class modifyOrder {
 	public static class hftRequest {
 		public getAuthorizationChallengeRequest getAuthorizationChallenge;
 		public getAuthorizationTokenRequest getAuthorizationToken;
-		public modifyOrderRequest  modifyOrder;
+		public getPositionRequest  getPosition;
 		
 		public hftRequest( String user) {
 			this.getAuthorizationChallenge = new getAuthorizationChallengeRequest(user); 
@@ -63,15 +64,15 @@ public class modifyOrder {
 			this.getAuthorizationToken = new getAuthorizationTokenRequest(user, challengeresp); 
 		}
 		
-		public hftRequest( String user, String token, List<modOrder> order ) {
-			this.modifyOrder = new modifyOrderRequest(user, token, order); 
+		public hftRequest( String user, String token, List<String> asset, List<String> security, List<String> account ) {
+			this.getPosition = new getPositionRequest(user, token, asset, security, account); 
 		}
 	}
 	
-	public static class hftResponse{
+	public static class hftResponse {
 		public getAuthorizationChallengeResponse getAuthorizationChallengeResponse;
         public getAuthorizationTokenResponse getAuthorizationTokenResponse;
-        public modifyOrderResponse modifyOrderResponse;
+        public getPositionResponse getPositionResponse;
     }
 	
 	public static class getAuthorizationChallengeRequest {
@@ -102,33 +103,61 @@ public class modifyOrder {
         public String        timestamp;
     }
 
-	public static class modifyOrderRequest {
+	public static class getPositionRequest {
 		public String        user;
 		public String        token;
-		public List<modOrder>   order;
+		public List<String>  asset;
+		public List<String>  security;
+		public List<String>  account;
 
-		public modifyOrderRequest( String user, String token, List<modOrder> order ) {
+		public getPositionRequest( String user, String token, List<String> asset, List<String> security, List<String> account ) {
 			this.user = user;
 			this.token = token;
-			this.order = order;
+			this.asset = asset;
+			this.security = security;
+			this.account = account;
 		}
 	}
-	
-	public static class modOrder {
-		public String  fixid;
-        public double  price;
-        public int     quantity;
-    }
 
-	public static class modifyOrderResponse {
-		public List<modifyTick> order;
+	public static class getPositionResponse {
+		public int              result;
 		public String           message;
+		public List<assetPositionTick>  assetposition;
+		public List<securityPositionTick>  securityposition;
+		public accountingTick  accounting;
+		public positionHeartbeat  heartbeat;
 		public String           timestamp;
 	}
 	
-	public static class modifyTick {
-		public String  fixid;
-		public String  result;
+	public static class assetPositionTick {
+		public String  account;
+		public String  asset;
+		public double  exposure;
+        public double  totalrisk;
+	}
+	
+	public static class securityPositionTick {
+		public String  account;
+		public String  security;
+		public double  exposure;
+		public String  side;
+		public double  price;
+		public int     pips;
+		public double  equity;
+		public double  freemargin;
+	}
+	
+	public static class accountingTick {
+		public double  strategyPL;
+		public double  totalequity;
+		public double  usedmargin;
+		public double  freemargin;
+	}
+	
+	public static class positionHeartbeat {
+		public List<String>  asset;
+		public List<String>  security;
+		public List<String>  account;
 	}
 
     public static void main(String[] args) throws IOException, DecoderException {
@@ -172,14 +201,23 @@ public class modifyOrder {
                         		token = response.getAuthorizationTokenResponse.token;
                         		return null;
                         	}
-                        	if (response.modifyOrderResponse != null){
-                        		if (response.modifyOrderResponse.order != null){
-                        			for (modifyTick tick : response.modifyOrderResponse.order){
-                        				System.out.println("Result from server: " + tick.fixid + "-" + tick.result);
-                        			}
-                        		}
-								if (response.modifyOrderResponse.message != null){
-									System.out.println("Message from server: " + response.modifyOrderResponse.message);
+                        	if (response.getPositionResponse != null){
+                        		if (response.getPositionResponse.accounting!= null){
+                        			accountingTick tick = response.getPositionResponse.accounting;
+                        			System.out.println("StrategyPL: " + tick.strategyPL + " TotalEquity: " + tick.totalequity + " UsedMargin: " + tick.usedmargin + " FreeMargin: " + tick.freemargin);
+                                }
+                        		if (response.getPositionResponse.assetposition!= null){
+									for (assetPositionTick tick : response.getPositionResponse.assetposition){
+										System.out.println("Asset: " + tick.asset + " Account: " + tick.account + " Exposure: " + tick.exposure);
+                                    }
+								}
+								if (response.getPositionResponse.securityposition!= null){
+									for (securityPositionTick tick : response.getPositionResponse.securityposition){
+										System.out.println("Security: " + tick.security + " Account: " + tick.account + " Equity: " + tick.equity + " Exposure: " + tick.exposure + " Price: " + tick.price + " Pips: " + tick.pips);
+                                    }
+								}
+								if (response.getPositionResponse.message != null){
+									System.out.println("Message from server: " + response.getPositionResponse.message);
 								}
                         	}
                         }
@@ -211,7 +249,7 @@ public class modifyOrder {
 			client.execute(httpRequest, responseHandler);
 			
 			// create challenge response
-			byte[] a = Hex.decodeHex(challenge.toCharArray());
+			byte[] a = Hex.decodeHex(challenge.toCharArray());;
 			byte[] b = password.getBytes();
 			byte[] c = new byte[a.length + b.length];
 			System.arraycopy(a, 0, c, 0, a.length);
@@ -230,17 +268,9 @@ public class modifyOrder {
 			client.execute(httpRequest, responseHandler);
         	
 			// -----------------------------------------
-	        // Prepare and send a modifyOrder request for two pending orders
+	        // Prepare and send a position request
 	        // -----------------------------------------
-			modOrder order1 = new modOrder();
-			order1.fixid = "TRD_20151007112351168_0128";
-			order1.price = 1.11005;
-			order1.quantity = 20000;
-			modOrder order2 = new modOrder();
-			order2.fixid = "TRD_20151007112401904_0127";
-			order2.price = 1.11006;
-			order2.quantity = 30000;
-			hftrequest = new hftRequest(user, token, Arrays.asList(order1, order2));
+			hftrequest = new hftRequest(user, token, null, Arrays.asList("EUR_USD", "GBP_USD"), null);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));
@@ -270,6 +300,8 @@ public class modifyOrder {
 			authentication_port = prop.getProperty("authentication-port");
 			request_port = prop.getProperty("request-port");
 			//interval = Integer.parseInt(prop.getProperty("interval"));
+			user = "jaime_api";
+			password = "jaime_api";
 		}
 		catch (IOException ex) {
 			ex.printStackTrace();
@@ -286,7 +318,7 @@ public class modifyOrder {
 		}
     }
 
-	public modifyOrder() {
+	public positionPolling() {
 		super();
 	}
 

@@ -1,3 +1,4 @@
+package src;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,9 +35,9 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 // 2) 'httpclient-xxx.jar' with MAVEN dependency: groupId 'org.apache.httpcomponents', artifactId 'fluent-hc' and version 4.5
 //                         or download from main project at 'https://hc.apache.org'
 
-public class setOrder {
+public class cancelOrder {
 
-	private static final String URL = "/setOrder";
+	private static final String URL = "/cancelOrder";
 	private static String domain;
 	//private static String url_stream;
 	private static String url_polling;
@@ -53,7 +54,7 @@ public class setOrder {
 	public static class hftRequest {
 		public getAuthorizationChallengeRequest getAuthorizationChallenge;
 		public getAuthorizationTokenRequest getAuthorizationToken;
-		public setOrderRequest  setOrder;
+		public cancelOrderRequest  cancelOrder;
 		
 		public hftRequest( String user) {
 			this.getAuthorizationChallenge = new getAuthorizationChallengeRequest(user); 
@@ -63,15 +64,15 @@ public class setOrder {
 			this.getAuthorizationToken = new getAuthorizationTokenRequest(user, challengeresp); 
 		}
 		
-		public hftRequest( String user, String token, List<orderRequest> order ) {
-			this.setOrder = new setOrderRequest(user, token, order); 
+		public hftRequest( String user, String token, List<String> fixid ) {
+			this.cancelOrder = new cancelOrderRequest(user, token, fixid); 
 		}
 	}
 	
 	public static class hftResponse{
 		public getAuthorizationChallengeResponse getAuthorizationChallengeResponse;
         public getAuthorizationTokenResponse getAuthorizationTokenResponse;
-        public setOrderResponse setOrderResponse;
+        public cancelOrderResponse cancelOrderResponse;
     }
 	
 	public static class getAuthorizationChallengeRequest {
@@ -102,36 +103,26 @@ public class setOrder {
         public String        timestamp;
     }
 
-	public static class setOrderRequest {
+	public static class cancelOrderRequest {
 		public String        user;
 		public String        token;
-		public List<orderRequest>  order;
+		public List<String>  fixid;
 
-		public setOrderRequest( String user, String token, List<orderRequest> order ) {
+		public cancelOrderRequest( String user, String token, List<String> fixid ) {
 			this.user = user;
 			this.token = token;
-			this.order = order;
+			this.fixid = fixid;
 		}
 	}
 
-	public static class setOrderResponse {
-		public int              result;
+	public static class cancelOrderResponse {
+		public List<cancelTick> order;
 		public String           message;
-		public List<orderRequest>    order;
 		public String           timestamp;
 	}
 	
-	public static class orderRequest {
-		public String  security;
-		public String  tinterface;
-		public int     quantity;
-		public String  side;
-		public String  type;
-		public String  timeinforce;
-		public double  price;
-		public int     expiration;
-		public int     userparam;
-		public int     tempid;
+	public static class cancelTick {
+		public String  fixid;
 		public String  result;
 	}
 
@@ -176,14 +167,14 @@ public class setOrder {
                         		token = response.getAuthorizationTokenResponse.token;
                         		return null;
                         	}
-                        	if (response.setOrderResponse != null){
-                        		if (response.setOrderResponse.order!= null){
-									for (orderRequest tick : response.setOrderResponse.order){
-										System.out.println("TempId: " + tick.tempid + " Security: " + tick.security + " Quantity: " + tick.quantity + " Type: " + tick.type + " Side: " + tick.side + " Price: " + tick.price + " Result: " + tick.result);
+                        	if (response.cancelOrderResponse != null){
+                        		if (response.cancelOrderResponse.order != null){
+									for (cancelTick tick : response.cancelOrderResponse.order){
+										System.out.println("Result from server: " + tick.fixid + "-" + tick.result);
                                     }
 								}
-								if (response.setOrderResponse.message != null){
-									System.out.println("Message from server: " + response.setOrderResponse.message);
+								if (response.cancelOrderResponse.message != null){
+									System.out.println("Message from server: " + response.cancelOrderResponse.message);
 								}
                         	}
                         }
@@ -234,23 +225,10 @@ public class setOrder {
 			client.execute(httpRequest, responseHandler);
         	
 			// -----------------------------------------
-	        // Prepare and send a setOrder request with two orders
+	        // Prepare and send a cancelOrder request for two pending orders
 	        // -----------------------------------------
-			orderRequest order1 = new orderRequest();
-			order1.security = "EUR_USD";
-			order1.tinterface = "Baxter_CNX";
-			order1.quantity = 500000;
-			order1.side = "sell";
-			order1.type = "market";
-			
-			orderRequest order2 = new orderRequest();
-			order2.security = "GBP_USD";
-			order2.tinterface = "Baxter_CNX";
-			order2.quantity = 600000;
-			order2.side = "sell";
-			order2.type = "limit";
-			order2.timeinforce = "day";
-			order2.price = 1.47389;
+			String order1 = "TRD_20151006145512719_0125";
+			String order2 = "TRD_20151006145524148_0124";
 			hftrequest = new hftRequest(user, token, Arrays.asList(order1, order2));
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
@@ -297,7 +275,7 @@ public class setOrder {
 		}
     }
 
-	public setOrder() {
+	public cancelOrder() {
 		super();
 	}
 

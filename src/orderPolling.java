@@ -1,3 +1,4 @@
+package src;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,9 +35,9 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 // 2) 'httpclient-xxx.jar' with MAVEN dependency: groupId 'org.apache.httpcomponents', artifactId 'fluent-hc' and version 4.5
 //                         or download from main project at 'https://hc.apache.org'
 
-public class cancelOrder {
+public class orderPolling {
 
-	private static final String URL = "/cancelOrder";
+	private static final String URL = "/getOrder";
 	private static String domain;
 	//private static String url_stream;
 	private static String url_polling;
@@ -53,7 +54,7 @@ public class cancelOrder {
 	public static class hftRequest {
 		public getAuthorizationChallengeRequest getAuthorizationChallenge;
 		public getAuthorizationTokenRequest getAuthorizationToken;
-		public cancelOrderRequest  cancelOrder;
+		public getOrderRequest  getOrder;
 		
 		public hftRequest( String user) {
 			this.getAuthorizationChallenge = new getAuthorizationChallengeRequest(user); 
@@ -63,15 +64,15 @@ public class cancelOrder {
 			this.getAuthorizationToken = new getAuthorizationTokenRequest(user, challengeresp); 
 		}
 		
-		public hftRequest( String user, String token, List<String> fixid ) {
-			this.cancelOrder = new cancelOrderRequest(user, token, fixid); 
+		public hftRequest( String user, String token, List<String> security, List<String> tinterface, List<String> type ) {
+			this.getOrder = new getOrderRequest(user, token, security, tinterface, type); 
 		}
 	}
 	
 	public static class hftResponse{
 		public getAuthorizationChallengeResponse getAuthorizationChallengeResponse;
         public getAuthorizationTokenResponse getAuthorizationTokenResponse;
-        public cancelOrderResponse cancelOrderResponse;
+        public getOrderResponse getOrderResponse;
     }
 	
 	public static class getAuthorizationChallengeRequest {
@@ -102,27 +103,61 @@ public class cancelOrder {
         public String        timestamp;
     }
 
-	public static class cancelOrderRequest {
+	public static class getOrderRequest {
 		public String        user;
 		public String        token;
-		public List<String>  fixid;
+		public List<String>  security;
+		public List<String>  tinterface;
+		public List<String>  type;
 
-		public cancelOrderRequest( String user, String token, List<String> fixid ) {
+		public getOrderRequest( String user, String token, List<String> security, List<String> tinterface, List<String> type ) {
 			this.user = user;
 			this.token = token;
-			this.fixid = fixid;
+			this.security = security;
+			this.tinterface = tinterface;
+			this.type = type;
 		}
 	}
-
-	public static class cancelOrderResponse {
-		public List<cancelTick> order;
+	
+	public static class getOrderResponse {
+		public int              result;
 		public String           message;
+		public List<orderTick>  order;
+		public orderHeartbeat   heartbeat;
 		public String           timestamp;
+		
 	}
 	
-	public static class cancelTick {
+	public static class orderTick {
+		public int     tempid;
+		public String  orderid;
 		public String  fixid;
-		public String  result;
+		public String  account;
+		public String  tinterface;
+		public String  security;
+		public int     pips;
+		public int     quantity;
+		public String  side;
+		public String  type;
+		public double  limitprice;
+		public int     maxshowquantity;
+		public String  timeinforce;
+		public int     seconds;
+		public int     milliseconds;
+		public String  expiration;
+		public double  finishedprice;
+		public int     finishedquantity;
+		public String  commcurrency;
+		public double  commission;
+		public double  priceatstart;
+		public int     userparam;
+		public String  status;
+		public String  reason;
+	}
+	
+	public static class orderHeartbeat {
+		public List<String>  security;
+		public List<String>  tinterface;
 	}
 
     public static void main(String[] args) throws IOException, DecoderException {
@@ -166,14 +201,14 @@ public class cancelOrder {
                         		token = response.getAuthorizationTokenResponse.token;
                         		return null;
                         	}
-                        	if (response.cancelOrderResponse != null){
-                        		if (response.cancelOrderResponse.order != null){
-									for (cancelTick tick : response.cancelOrderResponse.order){
-										System.out.println("Result from server: " + tick.fixid + "-" + tick.result);
+                        	if (response.getOrderResponse != null){
+                        		if (response.getOrderResponse.order!= null){
+									for (orderTick tick : response.getOrderResponse.order){
+										System.out.println("TempId: " + tick.tempid + " OrderId: " + tick.orderid + " Security: " + tick.security + " Account: " + tick.account + " Quantity: " + tick.quantity + " Type: " + tick.type + " Side: " + tick.side + " Status: " + tick.status);
                                     }
 								}
-								if (response.cancelOrderResponse.message != null){
-									System.out.println("Message from server: " + response.cancelOrderResponse.message);
+								if (response.getOrderResponse.message != null){
+									System.out.println("Message from server: " + response.getOrderResponse.message);
 								}
                         	}
                         }
@@ -224,11 +259,9 @@ public class cancelOrder {
 			client.execute(httpRequest, responseHandler);
         	
 			// -----------------------------------------
-	        // Prepare and send a cancelOrder request for two pending orders
+	        // Prepare and send a order request
 	        // -----------------------------------------
-			String order1 = "TRD_20151006145512719_0125";
-			String order2 = "TRD_20151006145524148_0124";
-			hftrequest = new hftRequest(user, token, Arrays.asList(order1, order2));
+			hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_JPY", "GBP_USD"), null, null);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));
@@ -239,7 +272,7 @@ public class cancelOrder {
 		} finally {
 			client.close();
 		}
-	
+
 	}
     
     public static void getProperties(){
@@ -274,7 +307,7 @@ public class cancelOrder {
 		}
     }
 
-	public cancelOrder() {
+	public orderPolling() {
 		super();
 	}
 
