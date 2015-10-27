@@ -20,7 +20,7 @@ JDK, IDE...
 
 **1. Clone this repository to the location of your choice** 
 
-The repository contains all the examples lsted above together with the classes needed. 
+The repository contains all the examples listed above together with the classes needed. 
 
 **2. Modify config.properties file with your settings** 
 
