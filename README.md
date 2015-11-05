@@ -1,6 +1,8 @@
 ### REST API Java Examples
 This is Arthika's repository for examples, sample code written in Java that demonstrates in a simple way how to use our REST API.
 
+* getAccount
+* getInterface
 * pricePolling
 * priceStreaming
 * orderPolling
@@ -13,7 +15,7 @@ This is Arthika's repository for examples, sample code written in Java that demo
 * authentication
 
 ### Pre-requisites:
-Will users need previous registration, account, strategy set-up...? After all, these xamples require a pre-existing strategy
+Will users need previous registration, account, strategy set-up...? After all, these examples require a pre-existing strategy
 JDK, IDE...
 
 ### How to:
