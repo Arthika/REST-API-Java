@@ -15,7 +15,7 @@ This is Arthika's repository for examples, sample code written in Java that demo
 * authentication
 
 ### Pre-requisites:
-Users will need to install a Java Development Kit and set it up so they are able to compile and execute using 'javac' and 'java' from a terminal window. 
+You need to install a Java Development Kit and set it up so they are able to compile and execute using 'javac' and 'java' from a terminal window. 
 
 ### How to:
 
@@ -49,7 +49,7 @@ $ javac -cp $JARS src/priceStreaming.java
 ```javascript
 $ export JARS=lib/commons-codec-1.9.jar:lib/commons-logging-1.2.jar:lib/fluent-hc-4.5.jar:lib/httpclient-4.5.jar:lib/httpclient-cache-4.5.jar:lib/httpclient-win-4.5.jar:lib/httpcore-4.4.1.jar:lib/httpmime-4.5.jar:lib/jackson-all-1.9.9.jar:lib/jna-4.1.0.jar:lib/jna-platform-4.1.0.jar
 
-$ java -cp $JARS src/priceStreaming
+$ java  -cp .:./src:$JARS priceStreaming
 
 Response timestamp: 1441712414.982956 Contents:
 Security: EUR_USD Price: 1.11618 Side: ask Liquidity: 1000000
