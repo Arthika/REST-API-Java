@@ -15,8 +15,7 @@ This is Arthika's repository for examples, sample code written in Java that demo
 * authentication
 
 ### Pre-requisites:
-Will users need previous registration, account, strategy set-up...? After all, these examples require a pre-existing strategy
-JDK, IDE...
+Users will need to install a Java Development Kit and set it up so they are able to compile and execute using 'javac' and 'java' from a terminal window. 
 
 ### How to:
 
@@ -61,6 +60,5 @@ Response timestamp: 1441712416.194543 Contents:
 Security: EUR_USD Price: 1.11618 Side: ask Liquidity: 1000000
 Security: EUR_USD Price: 1.11614 Side: bid Liquidity: 500000
 ```
-#### Going further
-Using IDE's such as Eclipse or Netbeans
+
 
