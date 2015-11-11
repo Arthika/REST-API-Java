@@ -38,7 +38,7 @@ From here on we will assume it is priceStreaming.java.
 hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_USD"), null, "tob", 1, interval);
 ```
 
-In case you want disable ssl protocol, change the following line 
+In case you want to disable ssl protocol, change the following line:
 ```
 private static final boolean ssl = true;
 ```
