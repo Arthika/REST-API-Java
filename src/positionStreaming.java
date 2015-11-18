@@ -150,6 +150,7 @@ public class positionStreaming {
 		public String  asset;
 		public double  exposure;
         public double  totalrisk;
+        public double  pl;
 	}
 	
 	public static class securityPositionTick {
@@ -159,6 +160,7 @@ public class positionStreaming {
 		public String  side;
 		public double  price;
 		public int     pips;
+		public double  pl;
 	}
 	
 	public static class accountingTick {
@@ -166,6 +168,7 @@ public class positionStreaming {
 		public double  totalequity;
 		public double  usedmargin;
 		public double  freemargin;
+		public String  m2mcurrency;
 	}
 	
 	public static class positionHeartbeat {
@@ -225,7 +228,9 @@ public class positionStreaming {
                         String line = null;
                         
                         while ((line = bufferedReader.readLine()) != null) {
+                        	System.out.println(line);
                         	hftResponse response = mapper.readValue(line, hftResponse.class);
+                        	
                         	
                         	if (response.getAuthorizationChallengeResponse != null){
                         		challenge = response.getAuthorizationChallengeResponse.challenge;
@@ -241,16 +246,16 @@ public class positionStreaming {
 								}
                         		if (response.getPositionResponse.accounting!= null){
                         			accountingTick tick = response.getPositionResponse.accounting;
-                        			System.out.println("StrategyPL: " + tick.strategyPL + " TotalEquity: " + tick.totalequity + " UsedMargin: " + tick.usedmargin + " FreeMargin: " + tick.freemargin);
+                        			System.out.println("m2mcurrency: " + tick.m2mcurrency + "StrategyPL: " + tick.strategyPL + " TotalEquity: " + tick.totalequity + " UsedMargin: " + tick.usedmargin + " FreeMargin: " + tick.freemargin);
 								}
 								if (response.getPositionResponse.assetposition!= null){
 									for (assetPositionTick tick : response.getPositionResponse.assetposition){
-										System.out.println("Asset: " + tick.asset + " Account: " + tick.account + " Exposure: " + tick.exposure);
+										System.out.println("Asset: " + tick.asset + " Account: " + tick.account + " Exposure: " + tick.exposure + " PL: " + tick.pl);
                                     }
 								}
 								if (response.getPositionResponse.securityposition!= null){
 									for (securityPositionTick tick : response.getPositionResponse.securityposition){
-										System.out.println("Security: " + tick.security + " Account: " + tick.account + " Exposure: " + tick.exposure + " Price: " + tick.price + " Pips: " + tick.pips);
+										System.out.println("Security: " + tick.security + " Account: " + tick.account + " Exposure: " + tick.exposure + " Price: " + tick.price + " Pips: " + tick.pips + " PL: " + tick.pl);
                                     }
 								}
 								if (response.getPositionResponse.heartbeat!= null){
