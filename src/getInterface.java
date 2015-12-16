@@ -246,7 +246,7 @@ public class getInterface {
 			client.execute(httpRequest, responseHandler);
         	
 			// -----------------------------------------
-	        // Prepare and send a order request
+	        // Prepare and send a getInterface request
 	        // -----------------------------------------
 			hftrequest.getInterface = new getInterfaceRequest(user, token);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);

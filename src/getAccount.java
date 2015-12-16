@@ -248,7 +248,7 @@ public class getAccount {
 			client.execute(httpRequest, responseHandler);
         	
 			// -----------------------------------------
-	        // Prepare and send a order request
+	        // Prepare and send a getAccount request
 	        // -----------------------------------------
 			hftrequest.getAccount = new getAccountRequest(user, token);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);

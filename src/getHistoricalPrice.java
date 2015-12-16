@@ -275,7 +275,7 @@ public class getHistoricalPrice {
 			client.execute(httpRequest, responseHandler);
         	
 			// -----------------------------------------
-	        //  Prepare and send a historical price request
+	        //  Prepare and send a getHistoricalPrices request
 	        // -----------------------------------------
 			hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_USD"), null, "s1", "ask", 3);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
