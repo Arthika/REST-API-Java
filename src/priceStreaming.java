@@ -287,7 +287,7 @@ public class priceStreaming {
 			// -----------------------------------------
 	        // Prepare and send a price request
 	        // -----------------------------------------
-			hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_USD"), null, "tob", 1, interval);
+			hftrequest = new hftRequest(user, token, Arrays.asList("EUR/USD", "GBP/USD"), null, "tob", 1, interval);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));

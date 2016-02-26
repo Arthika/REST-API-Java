@@ -303,7 +303,7 @@ public class orderStreaming {
 			// -----------------------------------------
 	        // Prepare and send a order request
 	        // -----------------------------------------
-			hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_JPY", "GBP_USD"), null, null, interval);
+			hftrequest = new hftRequest(user, token, Arrays.asList("EUR/USD", "GBP/JPY", "GBP/USD"), null, null, interval);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));

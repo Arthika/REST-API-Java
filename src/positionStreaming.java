@@ -315,7 +315,7 @@ public class positionStreaming {
 			// -----------------------------------------
 	        // Prepare and send a position request
 	        // -----------------------------------------
-			hftrequest = new hftRequest(user, token, null, Arrays.asList("EUR_USD", "GBP_USD"), null, interval);
+			hftrequest = new hftRequest(user, token, null, Arrays.asList("EUR/USD", "GBP/USD"), null, interval);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));

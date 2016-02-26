@@ -277,7 +277,7 @@ public class getHistoricalPrice {
 			// -----------------------------------------
 	        //  Prepare and send a getHistoricalPrices request
 	        // -----------------------------------------
-			hftrequest = new hftRequest(user, token, Arrays.asList("EUR_USD", "GBP_USD"), null, "s1", "ask", 3);
+			hftrequest = new hftRequest(user, token, Arrays.asList("EUR/USD", "GBP/USD"), null, "s1", "ask", 3);
 			mapper.setSerializationInclusion(Inclusion.NON_NULL);
 			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 			request = new StringEntity(mapper.writeValueAsString(hftrequest));
